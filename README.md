@@ -18,7 +18,7 @@ Simply run the server.js file to begin the application. Choose from the options 
 Click this link to see how it works.
 NOTE: It will open up in a tab.
 
-[EmployeeTrackerCMS.webm](https://user-images.githubusercontent.com/73844213/193965693-312a2a43-9d4d-49bf-82ba-721a3371da13.webm)
+[EmployeeTrackerCMS.webm](https://user-images.githubusercontent.com/73844213/193977498-c61729e7-1d81-46b6-911c-2571ef1567a4.webm)
 ## License
 This repository is Unlicensed and free to use.
 
