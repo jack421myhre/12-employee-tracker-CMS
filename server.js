@@ -198,7 +198,7 @@ function addRole() {
 
 // Populates all departments to the CLI.
 function viewDepts() {
-    db.query(`SELECT * FROM departments`, (err, response) => {
+    db.query(`SELECT * FROM department`, (err, response) => {
         if (err) throw err;
         console.table(response);
         init();
