@@ -15,8 +15,7 @@ npm mysql2, console.table, Inquirer packages
 ## Usage 
 Simply run the server.js file to begin the application. Choose from the options to perform an action.
 ## Walkthrough
-Click this link to see how it works.
-NOTE: It will open up in a tab.
+Watch the video to see how it works!
 
 [EmployeeTrackerCMS.webm](https://user-images.githubusercontent.com/73844213/193977498-c61729e7-1d81-46b6-911c-2571ef1567a4.webm)
 ## License
