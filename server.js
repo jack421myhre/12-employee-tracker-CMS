@@ -5,15 +5,6 @@
 // ---- IMPORTS ----
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const {
-    viewEmployees,
-    addEmployee,
-    updateEmployee,
-    viewAllRoles,
-    addRole,
-    viewDepts,
-    addDept
-} = require('./actions.js');
 
 // ------------------------------
 //  --- DATABASE CONNECTION --- 
@@ -90,6 +81,9 @@ function viewEmployees() {
     })
 }
 
+// Adds a new employee by accessing user answers
+// then inserting the new employee into the database
+// via db.query
 function addEmployee() {
     inquirer
         .prompt([
@@ -136,6 +130,7 @@ function addEmployee() {
         });
 }
 
+// Updates the employee role after asking for the name of the employee to change. Searches by last name and changes the role ID.
 function updateEmployee() {
     inquirer
         .prompt([
@@ -168,7 +163,8 @@ function viewAllRoles() {
     });
 }
 
-
+// Adds a new role. Gets the new role title, salary, and the department ID. 
+// NOTE: The department MUST exist prior to adding the role. A new error will be thrown if the user tries to add a new department through this action.
 function addRole() {
     inquirer
         .prompt([
