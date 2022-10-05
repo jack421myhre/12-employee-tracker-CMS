@@ -5,7 +5,15 @@
 // ---- IMPORTS ----
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-
+const {
+    viewEmployees,
+    addEmployee,
+    updateEmployee,
+    viewAllRoles,
+    addRole,
+    viewDepts,
+    addDept
+} = require('./actions.js');
 
 // ------------------------------
 //  --- DATABASE CONNECTION --- 
@@ -24,6 +32,7 @@ const db = mysql.createConnection(
 //    ---- USER INTERFACE ----
 // ------------------------------
 function init() {
+    // The main CLI. The user navigates this to control the employee database. Each option has a function to manipulate the data for the user.
     inquirer.prompt([
         {
             type: 'list',
@@ -119,7 +128,9 @@ function addEmployee() {
                     managerId
                 ], (err, response) => {
                     if (err) throw err;
+                    // Shows the changes table
                     console.table(response);
+                    // Brings the options back up
                     init();
                 });
         });
@@ -130,7 +141,7 @@ function updateEmployee() {
         .prompt([
             {
                 type: 'input',
-                message: 'Name employee to update.',
+                message: 'Last name of employee to update?',
                 name: 'employeeToUpdate'
             },
             {
@@ -140,7 +151,7 @@ function updateEmployee() {
             }
         ])
         .then(({ employeeToUpdate, newEmployeeRole }) => {
-            db.query(`UPDATE employee SET role_id = ? WHERE first_name = ?`, [newEmployeeRole, employeeToUpdate], (err, response) => {
+            db.query(`UPDATE employee SET role_id = ? WHERE last_name = ?`, [newEmployeeRole, employeeToUpdate], (err, response) => {
                 if (err) throw err;
                 console.table(response);
                 init();
@@ -148,6 +159,7 @@ function updateEmployee() {
         });
 }
 
+// Populates all roles to the CLI. 
 function viewAllRoles() {
     db.query(`SELECT * FROM role`, (err, response) => {
         if (err) throw err;
@@ -157,6 +169,63 @@ function viewAllRoles() {
 }
 
 
+function addRole() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Which role?',
+                name: 'newRole'
+            },
+            {
+                type: 'input',
+                message: 'Role salary?',
+                name: 'newSalary'
+            },
+            {
+                type: 'input',
+                message: 'Department ID?',
+                name: 'departmentId'
+            }
+        ])
+        .then(({ newRole, newSalary, departmentId }) => {
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [newRole, newSalary, departmentId], (err, response) => {
+                if (err) {
+                    // CUSTOM ERROR
+                    throw new Error('Unable to add role to department that does not exist. Add department first.');
+                };
+                console.table(response);
+                init();
+            });
+        });
+}
+
+// Populates all departments to the CLI.
+function viewDepts() {
+    db.query(`SELECT * FROM departments`, (err, response) => {
+        if (err) throw err;
+        console.table(response);
+        init();
+    });
+}
+
+// Adds a department to the existing list. After this action is taken, the user can then add new roles to this department.
+function addDept() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Department name?',
+                name: 'newDeptName'
+            }
+        ]).then(({ newDeptName }) => {
+            db.query(`INSERT INTO department (name) VALUES (?)`, newDeptName, (err, response) => {
+                if (err) throw err;
+                console.table(response);
+                init();
+            });
+        });
+}
 
 // Initialize the application
 init();
