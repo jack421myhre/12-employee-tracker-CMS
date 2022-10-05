@@ -5,7 +5,6 @@
 // ---- IMPORTS ----
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const consoleTable = require('console.table');
 
 
 // ------------------------------
@@ -20,12 +19,6 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the employees database.`)
 );
-
-// ------------------------------
-//   ---- PROMPT FUNCTIONS ----
-// ------------------------------
-
-
 
 // ------------------------------
 //    ---- USER INTERFACE ----
@@ -74,8 +67,94 @@ function init() {
                     break;
             }
         })
-        .catch(err => err ? console.log(err) : console.log('PASSED.'))
+        .catch(err => err ? console.log(err) : console.log('PASSED.'));
 };
+
+// ------------------------------
+//   ---- PROMPT FUNCTIONS ----
+// ------------------------------
+function viewEmployees() {
+    db.query(`SELECT * FROM employee`, (err, response) => {
+        if (err) throw err;
+        console.table(response);
+        init();
+    })
+}
+
+function addEmployee() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Employee first name?',
+                name: 'employeeFirstName',
+            },
+            {
+                type: 'input',
+                message: 'Employee last name?',
+                name: 'employeeLastName',
+            },
+            {
+                type: 'input',
+                message: 'Employee Role ID number?',
+                name: 'roleId'
+            },
+            {
+                type: 'input',
+                message: 'Manager ID number?',
+                name: 'managerId'
+            }
+        ])
+        .then(({ employeeFirstName, employeeLastName, roleId, managerId }) => {
+            db.query(
+                `INSERT INTO employee 
+                (first_name, 
+                    last_name,
+                    role_id,
+                    manager_id) VALUES (?, ?, ?, ?)`,
+                [
+                    employeeFirstName,
+                    employeeLastName,
+                    roleId,
+                    managerId
+                ], (err, response) => {
+                    if (err) throw err;
+                    console.table(response);
+                    init();
+                });
+        });
+}
+
+function updateEmployee() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Name employee to update.',
+                name: 'employeeToUpdate'
+            },
+            {
+                type: 'input',
+                message: "What is the employee's new role?",
+                name: 'newEmployeeRole'
+            }
+        ])
+        .then(({ employeeToUpdate, newEmployeeRole }) => {
+            db.query(`UPDATE employee SET role_id = ? WHERE first_name = ?`, [newEmployeeRole, employeeToUpdate], (err, response) => {
+                if (err) throw err;
+                console.table(response);
+                init();
+            });
+        });
+}
+
+function viewAllRoles() {
+    db.query(`SELECT * FROM role`, (err, response) => {
+        if (err) throw err;
+        console.table(response);
+        init();
+    });
+}
 
 
 
